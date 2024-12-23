@@ -9,7 +9,7 @@ export default [
   ...typescript,
   react.configs.flat?.recommended ?? {},
   {
-    plugins: {"react-hooks": reactHook},
+    plugins: { "react-hooks": reactHook },
     files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
     languageOptions: {
       parserOptions: {
