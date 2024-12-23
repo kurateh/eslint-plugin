@@ -1,9 +1,7 @@
-import kurateh from "@kurateh/eslint-plugin";
-
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   { ignores: ["dist/"] },
-  ...kurateh.configs.typescript,
+  // ...kurateh.configs.react,
   {
     rules: {
       "@kurateh/import-path": 0,

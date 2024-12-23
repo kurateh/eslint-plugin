@@ -31,3 +31,12 @@ declare module "eslint-plugin-import" {
   };
   export default plugin;
 }
+
+declare module "eslint-plugin-react-hooks" {
+  declare const plugin: {
+    configs: {
+      recommended: Linter.LegacyConfig;
+    };
+  };
+  export default plugin;
+}
