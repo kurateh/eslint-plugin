@@ -1,6 +1,6 @@
 {
   "name": "@kurateh/eslint-plugin",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
@@ -14,7 +14,8 @@
   "scripts": {
     "build": "tsup",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "version": "npm version"
   },
   "keywords": [
     "eslint",
