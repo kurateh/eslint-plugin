@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+- Fix a bug where comments or trailing commas in tsconfig.json would cause an error.
+
 ## 1.0.0 - 2024-12-23
 
 ## 0.1.0 - 2024-12-23

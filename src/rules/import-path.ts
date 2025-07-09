@@ -58,7 +58,12 @@ const getAbsolutePathInfo = (fileName: string) => {
     const tsPathConfig = JSON.parse(
       readFileSync(filePath, {
         encoding: "utf-8",
-      }),
+      })
+        // remove comments
+        .replace(/\/\/.*/g, "")
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        // remove trailing commas
+        .replace(/,(?=\s*[\]}])/g, ""),
     );
 
     const result: { baseUrl: string; paths: Record<string, string[]> } = {
