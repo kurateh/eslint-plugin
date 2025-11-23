@@ -59,9 +59,13 @@ const getAbsolutePathInfo = (fileName: string) => {
       readFileSync(filePath, {
         encoding: "utf-8",
       })
-        // remove comments
-        .replace(/\/\/.*/g, "")
-        .replace(/\/\*[\s\S]*?\*\//g, "")
+        // remove single line comments NOT in strings
+        .replace(/("(?:[^"\\]|\\.)*")|\/\/.*/g, (_, string) => string || "")
+        // remove multi-line comments NOT in strings
+        .replace(
+          /("(?:[^"\\]|\\.)*")|\/\*[\s\S]*?\*\//g,
+          (_, string) => string || "",
+        )
         // remove trailing commas
         .replace(/,(?=\s*[\]}])/g, ""),
     );
