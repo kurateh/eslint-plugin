@@ -5,7 +5,7 @@ import globals from "globals";
 
 import recommended from "./recommended";
 
-const config: Linter.Config[] = [
+const config = [
   ...recommended,
   react.configs.flat.recommended,
   reactHooks.configs.flat.recommended,
@@ -42,7 +42,7 @@ const config: Linter.Config[] = [
       "react/display-name": 0,
       "react/no-children-prop": [2, { allowFunctions: true }],
     },
-  } as Linter.Config,
-];
+  } ,
+] satisfies Linter.Config[];
 
 export default config;
