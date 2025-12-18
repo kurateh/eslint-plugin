@@ -41,6 +41,7 @@ export default [
       "react/prop-types": 0,
       "react/require-default-props": 0,
       "react/display-name": 0,
+      "react/no-children-prop": [2, { allowFunctions: true }],
     },
   },
 ] satisfies Linter.Config[];

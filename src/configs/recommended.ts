@@ -25,6 +25,7 @@ export default [
     ignores: ["node_modules/", "dist/", "build/", "coverage/"],
     rules: {
       // eslint
+      "no-console": 1,
       "object-shorthand": 1,
       "no-unused-vars": [
         1,
@@ -47,19 +48,7 @@ export default [
       "no-var": 2,
 
       // prettier
-      "prettier/prettier": [
-        1,
-        {
-          trailingComma: "all",
-          tabWidth: 2,
-          semi: true,
-          singleQuote: false,
-          endOfLine: "auto",
-        },
-        {
-          usePrettierrc: false,
-        },
-      ],
+      "prettier/prettier": 1,
 
       // import
       "import/no-unresolved": 0,
