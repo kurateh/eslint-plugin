@@ -3,10 +3,10 @@ import react from "eslint-plugin-react";
 import reactHook from "eslint-plugin-react-hooks";
 import globals from "globals";
 
-import typescript from "./typescript";
+import recommended from "./recommended";
 
 const config: Linter.Config[] = [
-  ...typescript,
+  ...recommended,
   (react.configs.flat?.recommended ?? {}) as Linter.Config,
   {
     plugins: { "react-hooks": reactHook },
