@@ -5,7 +5,7 @@ import tseslint from "typescript-eslint";
 import rules from "../rules";
 import recommended from "./recommended";
 
-export default [
+const config: Linter.Config[] = [
   ...recommended,
   // eslint-disable-next-line import/no-named-as-default-member
   ...(tseslint.configs.recommended as Linter.Config[]),
@@ -81,4 +81,6 @@ export default [
       "import-plugin/no-unresolved": 0,
     },
   },
-] satisfies Linter.Config[];
+];
+
+export default config;

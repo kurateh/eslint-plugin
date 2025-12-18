@@ -5,11 +5,13 @@ import recommended from "./configs/recommended";
 import typescript from "./configs/typescript";
 import rules from "./rules";
 
-export default {
+const plugin: ESLint.Plugin = {
   configs: {
     recommended,
     typescript,
     react,
   },
   rules,
-} satisfies ESLint.Plugin;
+};
+
+export default plugin;

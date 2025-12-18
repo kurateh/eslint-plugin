@@ -5,9 +5,9 @@ import globals from "globals";
 
 import typescript from "./typescript";
 
-export default [
+const config: Linter.Config[] = [
   ...typescript,
-  react.configs.flat?.recommended ?? {},
+  (react.configs.flat?.recommended ?? {}) as Linter.Config,
   {
     plugins: { "react-hooks": reactHook },
     files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
@@ -43,5 +43,7 @@ export default [
       "react/display-name": 0,
       "react/no-children-prop": [2, { allowFunctions: true }],
     },
-  },
-] satisfies Linter.Config[];
+  } as Linter.Config,
+];
+
+export default config;

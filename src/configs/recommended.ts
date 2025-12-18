@@ -5,7 +5,7 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 import unusedImportsPlugin from "eslint-plugin-unused-imports";
 import globals from "globals";
 
-export default [
+const config: Linter.Config[] = [
   js.configs.recommended,
   importPlugin.flatConfigs.recommended,
   eslintPluginPrettierRecommended,
@@ -94,4 +94,6 @@ export default [
       "unused-imports/no-unused-imports": 2,
     },
   },
-] satisfies Linter.Config[];
+];
+
+export default config;
