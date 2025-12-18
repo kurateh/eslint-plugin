@@ -6,7 +6,7 @@ export default [
   ...kurateh.configs.react,
   {
     rules: {
-      "@kurateh/import-path": 0,
+      "@kurateh/import-path": 1,
     },
   },
 ];
