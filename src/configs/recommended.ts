@@ -12,13 +12,15 @@ const config: Linter.Config[] = [
   js.configs.recommended,
   importPlugin.flatConfigs.recommended,
   eslintPluginPrettierRecommended,
-  // eslint-disable-next-line import/no-named-as-default-member
   ...(tseslint.configs.recommended as Linter.Config[]),
   importPlugin.flatConfigs.typescript,
   {
     // ESLint config block에 file이 있으면 해당 파일을 검사할 차례가 와서야 plugin이 적용됨
     // 따라서 이 Plugin을 끄려면 Config File에서 file: "~~"을 넣어야 됨
     // 이 과정을 없애기 위해 plugin 적용을 앞서 진행
+    plugins: {
+      "@kurateh": { rules, meta: { name: "@kurateh" } },
+    },
   },
   {
     files: ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
@@ -53,7 +55,6 @@ const config: Linter.Config[] = [
     },
     plugins: {
       "unused-imports": unusedImportsPlugin,
-      "@kurateh": { rules, meta: { name: "@kurateh" } },
     },
     languageOptions: {
       ecmaVersion: "latest",
@@ -92,7 +93,7 @@ const config: Linter.Config[] = [
       "prettier/prettier": 1,
 
       // import
-      "import/no-unresolved": 0,
+      "import/no-named-as-default-member": 0,
       "import/no-extraneous-dependencies": [
         2,
         {

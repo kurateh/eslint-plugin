@@ -7,6 +7,7 @@ export default [
   {
     rules: {
       "@kurateh/import-path": 1,
+      "import/no-unresolved": 0,
     },
   },
 ];
