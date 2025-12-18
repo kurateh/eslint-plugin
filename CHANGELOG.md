@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+- Merge JS and TS configs
+- Update rules
+- Upgrade almost whole dependencies
+
+### Fixed
+- Fix DTS build
+
 ## 1.2.0 - 2025-11-23
 ### Fixed
 - Fix a bug where comments format in strings would be removed when parsing tsconfig.json.
