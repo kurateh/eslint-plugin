@@ -1,6 +1,6 @@
 {
   "name": "@kurateh/eslint-plugin",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0",
   "exports": {
     ".": {
       "import": "./dist/index.mjs",
