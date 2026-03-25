@@ -118,7 +118,7 @@ export default createRule<[], MessageIds>({
   create: (context) => {
     return {
       ImportDeclaration: (node) => {
-        const fileName = context.getFilename();
+        const fileName = context.filename;
         const absolutePathInfo = getAbsolutePathInfo(fileName);
 
         if (absolutePathInfo === undefined) {
