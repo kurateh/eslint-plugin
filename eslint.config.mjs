@@ -14,6 +14,12 @@ export default [
     rules: {
       "react/display-name": 0,
       "react/prop-types": 0,
+      "prettier/prettier": [
+        1,
+        {
+          usePrettierrc: true,
+        },
+      ],
     },
   },
   ...kurateh.configs.react,

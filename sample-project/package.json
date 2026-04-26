@@ -9,7 +9,8 @@
   "devDependencies": {
     "@kurateh/eslint-plugin": "file:..",
     "eslint": "^10.2.1",
-    "typescript": "^6.0.3",
-    "globals": "^17.5.0"
+    "globals": "^17.5.0",
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3"
   }
 }
