@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+- New `import-path` rule with Vitest-based test suite.
+- `sample-project` for integration testing and demonstration.
+- Project-wide Vitest configuration and `RuleTester` utility.
+- `.prettierrc` for consistent code formatting.
+
+### Changed
+- Enhanced release workflow to support manual version specification via `custom-version` input.
+- Comprehensive `README.md` update including installation, Flat Config setup, and deployment guides.
+- Modernized `tsconfig.json` with `ES2022` target and `Bundler` module resolution.
+- Improved `eslint.config.mjs` with React optimizations and test-specific overrides.
+- Added plugin metadata (namespace, version) by reading `package.json` in `src/index.ts`.
+- Improved path normalization logic in `import-path` rule for cross-platform compatibility.
+
 ## 2.0.0 - 2026-03-25
 
 ## 2.0.0-beta.1 - 2025-12-18
