@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 10.0.0 - 2026-04-26
 ### Added
 - New `import-path` rule with Vitest-based test suite.
 - `sample-project` for integration testing and demonstration.
