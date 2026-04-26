@@ -42,7 +42,7 @@ const config: Linter.Config[] = [
       "react/display-name": 0,
       "react/no-children-prop": [2, { allowFunctions: true }],
     },
-  } ,
+  },
 ] satisfies Linter.Config[];
 
 export default config;

@@ -14,7 +14,7 @@ vi.mock("node:fs", async (importOriginal) => {
       if (normalizedP.includes(`${root}/tsconfig.json`)) return true;
       return actual.existsSync(p);
     },
-    readFileSync: (p: string, options: any) => {
+    readFileSync: (p: string, options: unknown) => {
       const normalizedP = p.replace(/\\/g, "/");
       if (normalizedP.includes(`${root}/tsconfig.json`)) {
         return JSON.stringify({
@@ -26,7 +26,8 @@ vi.mock("node:fs", async (importOriginal) => {
           },
         });
       }
-      return actual.readFileSync(p, options);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return actual.readFileSync(p, options as any);
     },
   };
 });

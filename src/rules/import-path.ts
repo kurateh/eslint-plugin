@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import path, { dirname, join, relative } from "node:path";
+import path, { join } from "node:path";
 
 import { createRule } from "../utils";
 
@@ -70,7 +70,10 @@ const getAbsolutePathInfo = (fileName: string) => {
         encoding: "utf-8",
       })
         // remove single line comments NOT in strings
-        .replace(/("(?:[^"\\]|\\.)*")|\/\/.*/g, (_: string, string: string) => string || "")
+        .replace(
+          /("(?:[^"\\]|\\.)*")|\/\/.*/g,
+          (_: string, string: string) => string || "",
+        )
         // remove multi-line comments NOT in strings
         .replace(
           /("(?:[^"\\]|\\.)*")|\/\*[\s\S]*?\*\//g,
@@ -86,7 +89,9 @@ const getAbsolutePathInfo = (fileName: string) => {
     };
 
     if (has(tsPathConfig, "compilerOptions.baseUrl")) {
-      result.baseUrl = normalizePath(posix.join(baseDir, tsPathConfig.compilerOptions.baseUrl));
+      result.baseUrl = normalizePath(
+        posix.join(baseDir, tsPathConfig.compilerOptions.baseUrl),
+      );
     }
 
     if (has(tsPathConfig, "compilerOptions.paths")) {
@@ -94,7 +99,9 @@ const getAbsolutePathInfo = (fileName: string) => {
         Object.entries<string[]>(tsPathConfig.compilerOptions.paths).map(
           ([key, value]: [string, string[]]) => [
             key.replace(/\/\*$/, "/"),
-            value.map((path: string) => normalizePath(posix.join(baseDir, path)).replace(/\/\*$/, "/")),
+            value.map((path: string) =>
+              normalizePath(posix.join(baseDir, path)).replace(/\/\*$/, "/"),
+            ),
           ],
         ),
       );
@@ -138,7 +145,9 @@ export default createRule<[], MessageIds>({
         const source = node.source.value;
 
         if (source.startsWith("..")) {
-          const sourceAbsolutePath = normalizePath(posix.join(posix.dirname(fileName), source));
+          const sourceAbsolutePath = normalizePath(
+            posix.join(posix.dirname(fileName), source),
+          );
 
           for (const [alias, paths] of Object.entries(absolutePathInfo.paths)) {
             for (const path of paths) {
@@ -169,7 +178,9 @@ export default createRule<[], MessageIds>({
         for (const [alias, paths] of Object.entries(absolutePathInfo.paths)) {
           for (const path of paths) {
             if (source.startsWith(alias)) {
-              sourceAbsolutePath = normalizePath(posix.join(path, source.replace(alias, "")));
+              sourceAbsolutePath = normalizePath(
+                posix.join(path, source.replace(alias, "")),
+              );
               break;
             }
           }
@@ -183,10 +194,9 @@ export default createRule<[], MessageIds>({
           return;
         }
 
-        const sourceRelativePath = normalizePath(posix.relative(
-          posix.dirname(fileName),
-          sourceAbsolutePath,
-        ));
+        const sourceRelativePath = normalizePath(
+          posix.relative(posix.dirname(fileName), sourceAbsolutePath),
+        );
 
         if (sourceRelativePath.startsWith("..")) {
           return;
