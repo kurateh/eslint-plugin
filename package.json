@@ -2,6 +2,13 @@
   "name": "@kurateh/eslint-plugin",
   "version": "2.0.0",
   "type": "module",
+  "author": {
+    "name": "kurateh",
+    "email": "me@kurateh.com"
+  },
+  "repository": {
+    "url": "https://github.com/kurateh/eslint-plugin"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
