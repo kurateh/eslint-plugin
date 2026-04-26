@@ -1,7 +1,9 @@
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, join, relative } from "node:path";
+import path, { dirname, join, relative } from "node:path";
 
 import { createRule } from "../utils";
+
+const posix = path.posix;
 
 const TS_CONFIG_FILE_NAMES = ["tsconfig.path.json", "tsconfig.json"];
 
@@ -24,6 +26,11 @@ const has = (map: Record<string, any>, path: string) => {
 };
 
 /**
+ * 경로를 Posix 스타일(/)로 통일한다.
+ */
+const normalizePath = (p: string) => p.replace(/\\/g, "/");
+
+/**
  * initialPath에서 시작하여 filename의 절대 경로를 탐색한다.
  * @param filename 탐색하려는 파일 이름
  * @param initialPath 탐색을 시작하는 위치
@@ -31,10 +38,12 @@ const has = (map: Record<string, any>, path: string) => {
  */
 const findFilePath = (filename: string, initialPath: string) => {
   let dir = initialPath;
+  let lastDir: string;
 
   do {
-    dir = dirname(dir);
-  } while (!existsSync(join(dir, filename)) && dir !== "/");
+    lastDir = dir;
+    dir = posix.dirname(dir);
+  } while (!existsSync(join(dir, filename)) && dir !== lastDir);
 
   const filePath = join(dir, filename);
 
@@ -42,18 +51,19 @@ const findFilePath = (filename: string, initialPath: string) => {
     return;
   }
 
-  return filePath;
+  return normalizePath(filePath);
 };
 
 const getAbsolutePathInfo = (fileName: string) => {
+  const normalizedFileName = normalizePath(fileName);
   for (const configPath of TS_CONFIG_FILE_NAMES) {
-    const filePath = findFilePath(configPath, fileName);
+    const filePath = findFilePath(configPath, normalizedFileName);
 
     if (filePath === undefined) {
       continue;
     }
 
-    const baseDir = dirname(filePath);
+    const baseDir = normalizePath(posix.dirname(filePath));
 
     const tsPathConfig = JSON.parse(
       readFileSync(filePath, {
@@ -76,7 +86,7 @@ const getAbsolutePathInfo = (fileName: string) => {
     };
 
     if (has(tsPathConfig, "compilerOptions.baseUrl")) {
-      result.baseUrl = join(baseDir, tsPathConfig.compilerOptions.baseUrl);
+      result.baseUrl = normalizePath(posix.join(baseDir, tsPathConfig.compilerOptions.baseUrl));
     }
 
     if (has(tsPathConfig, "compilerOptions.paths")) {
@@ -84,7 +94,7 @@ const getAbsolutePathInfo = (fileName: string) => {
         Object.entries<string[]>(tsPathConfig.compilerOptions.paths).map(
           ([key, value]: [string, string[]]) => [
             key.replace(/\/\*$/, "/"),
-            value.map((path: string) => join(baseDir, path).replace(/\/\*$/, "/")),
+            value.map((path: string) => normalizePath(posix.join(baseDir, path)).replace(/\/\*$/, "/")),
           ],
         ),
       );
@@ -118,21 +128,17 @@ export default createRule<[], MessageIds>({
   create: (context) => {
     return {
       ImportDeclaration: (node) => {
-        const fileName = context.filename;
+        const fileName = normalizePath(context.filename);
         const absolutePathInfo = getAbsolutePathInfo(fileName);
 
         if (absolutePathInfo === undefined) {
           return;
         }
-        // console.log("fileName", fileName);
-        // console.log("absolutePathInfo", absolutePathInfo);
 
         const source = node.source.value;
-        // console.log("source", source);
 
         if (source.startsWith("..")) {
-          const sourceAbsolutePath = join(dirname(fileName), source);
-          // console.log("sourceAbsolutePath", sourceAbsolutePath);
+          const sourceAbsolutePath = normalizePath(posix.join(posix.dirname(fileName), source));
 
           for (const [alias, paths] of Object.entries(absolutePathInfo.paths)) {
             for (const path of paths) {
@@ -163,7 +169,7 @@ export default createRule<[], MessageIds>({
         for (const [alias, paths] of Object.entries(absolutePathInfo.paths)) {
           for (const path of paths) {
             if (source.startsWith(alias)) {
-              sourceAbsolutePath = join(path, source.replace(alias, ""));
+              sourceAbsolutePath = normalizePath(posix.join(path, source.replace(alias, "")));
               break;
             }
           }
@@ -177,11 +183,10 @@ export default createRule<[], MessageIds>({
           return;
         }
 
-        // console.log("sourceAbsolutePath", sourceAbsolutePath);
-        const sourceRelativePath = relative(
-          dirname(fileName),
+        const sourceRelativePath = normalizePath(posix.relative(
+          posix.dirname(fileName),
           sourceAbsolutePath,
-        );
+        ));
 
         if (sourceRelativePath.startsWith("..")) {
           return;
