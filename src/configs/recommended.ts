@@ -8,7 +8,7 @@ import tseslint from "typescript-eslint";
 
 import rules from "../rules";
 
-const config = [
+const config: Linter.Config[] = [
   js.configs.recommended,
   importPlugin.flatConfigs.recommended,
   eslintPluginPrettierRecommended,

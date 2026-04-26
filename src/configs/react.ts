@@ -5,7 +5,7 @@ import globals from "globals";
 
 import recommended from "./recommended";
 
-const config = [
+const config: Linter.Config[] = [
   ...recommended,
   react.configs.flat.recommended,
   reactHooks.configs.flat.recommended,

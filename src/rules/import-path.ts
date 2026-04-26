@@ -60,11 +60,11 @@ const getAbsolutePathInfo = (fileName: string) => {
         encoding: "utf-8",
       })
         // remove single line comments NOT in strings
-        .replace(/("(?:[^"\\]|\\.)*")|\/\/.*/g, (_, string) => string || "")
+        .replace(/("(?:[^"\\]|\\.)*")|\/\/.*/g, (_: string, string: string) => string || "")
         // remove multi-line comments NOT in strings
         .replace(
           /("(?:[^"\\]|\\.)*")|\/\*[\s\S]*?\*\//g,
-          (_, string) => string || "",
+          (_: string, string: string) => string || "",
         )
         // remove trailing commas
         .replace(/,(?=\s*[\]}])/g, ""),
@@ -82,9 +82,9 @@ const getAbsolutePathInfo = (fileName: string) => {
     if (has(tsPathConfig, "compilerOptions.paths")) {
       result.paths = Object.fromEntries(
         Object.entries<string[]>(tsPathConfig.compilerOptions.paths).map(
-          ([key, value]) => [
+          ([key, value]: [string, string[]]) => [
             key.replace(/\/\*$/, "/"),
-            value.map((path) => join(baseDir, path).replace(/\/\*$/, "/")),
+            value.map((path: string) => join(baseDir, path).replace(/\/\*$/, "/")),
           ],
         ),
       );
