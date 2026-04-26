@@ -4,7 +4,11 @@ on:
     inputs:
       release-type:
         description: "Release type (one of): patch, minor, major, prepatch, preminor, premajor, prerelease"
-        required: true
+        required: false
+        default: "patch"
+      custom-version:
+        description: "Custom version (e.g. 10.0.0). If provided, release-type is ignored."
+        required: false
 permissions: write-all
 jobs:
   release:
@@ -12,69 +16,62 @@ jobs:
     steps:
       # Checkout project repository
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
 
       # Setup Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          registry-url: https://registry.npmjs.org/
-          node-version: "22"
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        id: pnpm-install
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: 24
+          cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build packages
-        run: pnpm build
-
-      - name: Check code
+      - name: Build & Check code
         run: |
-          pnpm lint --ignore-pattern "sample*/**/*"
+          pnpm build
+          pnpm lint
+          pnpm test
           pnpm type-check
 
-      # Configure Git
-      - name: Git configuration
+      # Determine and Bump version
+      - name: Bump version
         run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
+          if [ -n "$CUSTOM_VERSION" ]; then
+            # If custom version is provided, use it directly
+            NEW_VER=$(npm --no-git-tag-version version $CUSTOM_VERSION | tail -n 1)
+            
+            # Determine tag based on version string (contains '-' means beta)
+            if [[ "$CUSTOM_VERSION" == *-* ]]; then
+              TAG="beta"
+            else
+              TAG="latest"
+            fi
+          else
+            # Use release-type logic
+            if [[ "$RELEASE_TYPE" == pre* ]]; then
+              NEW_VER=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE | tail -n 1)
+              TAG="beta"
+            else
+              NEW_VER=$(npm --no-git-tag-version version $RELEASE_TYPE | tail -n 1)
+              TAG="latest"
+            fi
+          fi
 
-      # Bump package version
-      # Use tag latest
-      - name: Bump release version
-        if: startsWith(github.event.inputs.release-type, 'pre') != true
-        run: |
-          echo "NEW_VERSION=$(npm --no-git-tag-version version $RELEASE_TYPE | tail -n 1)" >> $GITHUB_ENV
-          echo "RELEASE_TAG=latest" >> $GITHUB_ENV
+          echo "NEW_VERSION=$NEW_VER" >> $GITHUB_ENV
+          echo "RELEASE_TAG=$TAG" >> $GITHUB_ENV
         env:
           RELEASE_TYPE: ${{ github.event.inputs.release-type }}
-
-      # Bump package pre-release version
-      # Use tag beta for pre-release versions
-      - name: Bump pre-release version
-        if: startsWith(github.event.inputs.release-type, 'pre')
-        run: |
-          echo "NEW_VERSION=$(npm --no-git-tag-version --preid=beta version $RELEASE_TYPE | tail -n 1)" >> $GITHUB_ENV
-          echo "RELEASE_TAG=beta" >> $GITHUB_ENV
-        env:
-          RELEASE_TYPE: ${{ github.event.inputs.release-type }}
+          CUSTOM_VERSION: ${{ github.event.inputs.custom-version }}
 
       # Update changelog unreleased section with new version
       - name: Update changelog
@@ -87,6 +84,8 @@ jobs:
       # Commit changes
       - name: Commit CHANGELOG.md and package.json changes and create tag
         run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add "package.json"
           git add "CHANGELOG.md"
           git commit -m "chore: release ${{ env.NEW_VERSION }}"
@@ -94,7 +93,7 @@ jobs:
 
       # Publish version to public repository
       - name: Publish
-        run: pnpm publish --access public --tag ${{ env.RELEASE_TAG }}
+        run: pnpm publish --access public --tag ${{ env.RELEASE_TAG }} --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPMJS_ACCESS_TOKEN }}
 
