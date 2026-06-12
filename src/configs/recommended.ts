@@ -69,16 +69,6 @@ const config: Linter.Config[] = [
       // eslint
       "no-console": 1,
       "object-shorthand": 1,
-      "no-unused-vars": [
-        1,
-        {
-          ignoreRestSiblings: true,
-          vars: "all",
-          args: "after-used",
-          argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
       "no-param-reassign": [
         2,
         {
