@@ -26,10 +26,10 @@ import kuratehPlugin from "@kurateh/eslint-plugin";
 
 export default [
   // Apply recommended configuration
-  kuratehPlugin.configs.recommended,
+  ...kuratehPlugin.configs.recommended,
   
   // Apply additional configuration for React environments
-  kuratehPlugin.configs.react,
+  ...kuratehPlugin.configs.react,
   
   {
     plugins: {

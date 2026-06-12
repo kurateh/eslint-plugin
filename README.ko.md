@@ -26,10 +26,10 @@ import kuratehPlugin from "@kurateh/eslint-plugin";
 
 export default [
   // 권장 설정 적용
-  kuratehPlugin.configs.recommended,
+  ...kuratehPlugin.configs.recommended,
   
   // React 환경인 경우 추가 설정 적용
-  kuratehPlugin.configs.react,
+  ...kuratehPlugin.configs.react,
   
   {
     plugins: {
